@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="human.css">
+    <title>5x6 Tic Tac Toe</title>
+</head>
+<body>
+    <div class="grid-container"><div class="container" id="game-board"></div></div>
+    
+    <div style="padding: 30px;" class="panel">
+        <p id="playerTypeLabel">Player versus Player</p>
+        
+        <label for="player1Name">Player 1 Name:</label>
+        <input type="text" id="player1Name" placeholder="Enter player's name..."><br><br>
+
+        <label for="player2Name">Player 2 Name:</label>
+        <input type="text" id="player2Name" placeholder="Enter player's name..."><br>
+
+        <a id="play" onclick="showElements()">START GAME</a>
+
+        <div id="hiddenElements" style="display: none;">
+            <p id="currentTurnLabel">Current Turn</p>
+            <p id="currentTurn">Player X</p>
+            
+            <br>
+
+            <p id="tally">Tally</p>
+            
+            <div class="tally">
+                <div id="playerXWins">Player X Wins: 0</div>&emsp;&emsp;
+                <div id="playerOWins">Player O Wins: 0</div>
+            </div> 
+            
+            <a id="resetButton">RESET GAME</a>
+        </div><br>
+
+        <a href="index.html" id="exit">EXIT GAME</a>
+    </div>
+
+    <div class="footer">
+        <span>Carandang</span>
+        <span>Choa</span>
+        <span>Colaja</span>
+        <span>Fabregas</span>
+        <span>Farala</span>
+    </div>
+    
+    <script src="human-tictac.js"></script>
+
+</body>
+</html>
