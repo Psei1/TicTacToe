@@ -61,8 +61,8 @@ document.addEventListener("DOMContentLoaded", function () {
             event.target.textContent = currentPlayer;
     
             // Apply color to the text based on the player
-            event.target.style.color = currentPlayer === "X" ? "magenta" : "blue"; // Changed lightblue to blue for player O
-    
+            event.target.style.color = currentPlayer === "X" ? "red" : "blue"; // Changed lightblue to blue for player O
+            
             // Check for a win or a tie (you need to implement these functions)
             if (checkForWin(row, col)) {
                 announceWinner();
@@ -104,12 +104,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
     
-    
-    
     function makeAIMove() {
         // Implement AI logic based on the selected difficulty
         const availableCells = [];
-
+    
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < cols; j++) {
                 if (gameBoard[i][j] === "") {
@@ -117,10 +115,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         }
-
+    
         if (availableCells.length > 0) {
             let aiMove;
-
+    
             if (aiDifficulty === "easy") {
                 // Easy: Random move
                 aiMove = getRandomMove(availableCells);
@@ -131,14 +129,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Extreme: Winning move for 60%, Blocking move for 30%, Random move for 10%
                 aiMove = getSmartMove(availableCells, 90);
             }
-
+    
             gameBoard[aiMove.row][aiMove.col] = "O";
-            document.querySelector(`.cell[data-row="${aiMove.row}"][data-col="${aiMove.col}"]`).textContent = "O";
-
+            const cell = document.querySelector(`.cell[data-row="${aiMove.row}"][data-col="${aiMove.col}"]`);
+            cell.textContent = "O";
+            cell.style.color = "blue"; // Set the text color to blue
+    
             if (checkForWin(aiMove.row, aiMove.col) || checkForTie()) {
-                alert(`${player2Name} wins!`);
-                updateWinTally(player2Name);
-                resetGame();
+                announceWinner(); // Highlight the winning cells
+                setTimeout(() => {
+                    alert(`${player2Name} wins!`);
+                    updateWinTally(player2Name);
+                    resetGame();
+                }, 1000); // Delay before resetting for better user experience
             } else {
                 // Switch player
                 currentPlayer = "X";
@@ -146,6 +149,8 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     }
+    
+    
 
     function getRandomMove(availableCells) {
         const randomIndex = Math.floor(Math.random() * availableCells.length);
@@ -171,6 +176,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (checkForWin(cell.row, cell.col)) {
                     return cell;
                 }
+    
+                // Check for player's potential win with 4 cells horizontally
+                if (checkPotentialWin(tempBoard, cell.row, cell.col, "X", 4)) {
+                    return cell;
+                }
+    
+                // Check for player's potential win with 5 cells vertically
+                if (checkPotentialWin(tempBoard, cell.row, cell.col, "X", 5, true)) {
+                    return cell;
+                }
             }
         }
     
@@ -193,9 +208,30 @@ document.addEventListener("DOMContentLoaded", function () {
         return getRandomMove(availableCells);
     }
     
+    function checkPotentialWin(board, row, col, player, count, vertical = false) {
+        const checkDirection = (r, c, rChange, cChange) => {
+            let consecutiveCount = 0;
+    
+            while (r >= 0 && r < rows && c >= 0 && c < cols && board[r][c] === player) {
+                consecutiveCount++;
+                r += rChange;
+                c += cChange;
+            }
+    
+            return consecutiveCount;
+        };
+    
+        const horizontalCount = checkDirection(row, col, 0, 1) + checkDirection(row, col, 0, -1) - 1;
+        const verticalCount = checkDirection(row, col, 1, 0) + checkDirection(row, col, -1, 0) - 1;
+        const diagonal1Count = checkDirection(row, col, 1, 1) + checkDirection(row, col, -1, -1) - 1;
+        const diagonal2Count = checkDirection(row, col, 1, -1) + checkDirection(row, col, -1, 1) - 1;
+    
+        return (horizontalCount >= count) || (vertical && verticalCount >= count) ||
+            (diagonal1Count >= count) || (diagonal2Count >= count);
+    }
     
     
-
+    
     function checkForWin(row, col) {
       // Check horizontally
       if (gameBoard[row].every((cell) => cell === currentPlayer)) {
