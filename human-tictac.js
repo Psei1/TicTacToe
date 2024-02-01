@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
             event.target.textContent = currentPlayer;
     
             // Apply color to the text based on the player
-            event.target.style.color = currentPlayer === "X" ? "magenta" : "blue"; // Change "lightblue" to "blue" for O's color
+            event.target.style.color = currentPlayer === "X" ? "red" : "blue"; // Change "lightblue" to "blue" for O's color
     
             // Check for a win or a tie (you need to implement these functions)
             if (checkForWin(row, col)) {
