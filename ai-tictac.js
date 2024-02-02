@@ -26,23 +26,23 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Add event listener for the "START GAME" button
+    // Adds event listener for the "START GAME" button
     const playButton = document.getElementById("play");
     playButton.addEventListener("click", function () {
         player1Name = document.getElementById('player1Name').value || "Player 1";
         player2Name = "AI";
 
-        // Set the initial player names
+        // Sets the initial player names
         playerXWinsDisplay.textContent = `${player1Name} Wins: 0`;
         playerOWinsDisplay.textContent = `${player2Name} Wins: 0`;
         document.getElementById('currentTurn').textContent = `${player1Name}'s Turn`;
 
         document.getElementById('hiddenElements').style.display = 'block';
 
-        // Enable human player after showing elements
+        // Enables human player after showing elements
         enableHumanPlayer();
 
-        // Get the selected AI difficulty
+        // Gets the selected AI difficulty
         aiDifficulty = difficultySelect.value;
     });
 
@@ -61,9 +61,9 @@ document.addEventListener("DOMContentLoaded", function () {
             event.target.textContent = currentPlayer;
     
             // Apply color to the text based on the player
-            event.target.style.color = currentPlayer === "X" ? "red" : "blue"; // Changed lightblue to blue for player O
+            event.target.style.color = currentPlayer === "X" ? "red" : "blue"; 
             
-            // Check for a win or a tie (you need to implement these functions)
+            // Check for a win or a tie 
             if (checkForWin(row, col)) {
                 announceWinner();
                 setTimeout(() => {
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         updateWinTally(currentPlayer);
                     }
                     resetGame();
-                }, 1000); // Delay before resetting for better user experience
+                }, 1000); // Delay before resetting 
             } else if (checkForTie()) {
                 alert("It's a draw! No points awarded.");
                 resetGame();
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
                 // If the current player is AI, let the AI make a move
                 if (currentPlayer === "O") {
-                    setTimeout(makeAIMove, 500); // Delay for better user experience
+                    setTimeout(makeAIMove, 500); // Delay
                 }
             }
         }
@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
     function makeAIMove() {
-        // Implement AI logic based on the selected difficulty
+        // Implements AI logic based on the selected difficulty
         const availableCells = [];
     
         for (let i = 0; i < rows; i++) {
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     alert(`${player2Name} wins!`);
                     updateWinTally(player2Name);
                     resetGame();
-                }, 1000); // Delay before resetting for better user experience
+                }, 1000); // Delay before resetting
             } else {
                 // Switch player
                 currentPlayer = "X";
@@ -287,10 +287,10 @@ document.addEventListener("DOMContentLoaded", function () {
         if (player === "X") {
             playerXTally++;
         } else {
-            playerOTally++;  // Always increment for player 2 (AI)
+            playerOTally++;  // increment for player 2 (AI)
         }
     
-        // Update the tally display with the correct player names
+        // Updates the tally display with the correct player names
         playerXWinsDisplay.textContent = `${player1Name} Wins: ${playerXTally}`;
         playerOWinsDisplay.textContent = `${player2Name} Wins: ${playerOTally}`;
 
