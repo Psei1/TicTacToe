@@ -124,10 +124,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 aiMove = getRandomMove(availableCells);
             } else if (aiDifficulty === "difficult") {
                 // Difficult: Random move for 60%, Winning move for 40%
-                aiMove = getSmartMove(availableCells, 60);
+                aiMove = getSmartMove(availableCells, 80);
             } else if (aiDifficulty === "extreme") {
                 // Extreme: Winning move for 60%, Blocking move for 30%, Random move for 10%
-                aiMove = getSmartMove(availableCells, 90);
+                aiMove = getSmartMove(availableCells, 99);
             }
     
             gameBoard[aiMove.row][aiMove.col] = "O";
@@ -202,11 +202,28 @@ document.addEventListener("DOMContentLoaded", function () {
             if (cornerMoves.length > 0) {
                 return getRandomMove(cornerMoves);
             }
+
+            // Prioritize edges if corners are not available
+            const edgeMoves = availableCells.filter(cell => (cell.row === 0 || cell.row === rows - 1) || (cell.col === 0 || cell.col === cols - 1));
+            if (edgeMoves.length > 0) {
+                return getRandomMove(edgeMoves);
+            }
+
+            // Prioritize blocking corner moves if edges are not available
+            const cornerMove = checkCornerMoves(tempBoard, "X");
+            if (cornerMove) {
+                return cornerMove;
+            }
         }
     
         // Random move: If not a winning move or an advanced move, choose randomly
         return getRandomMove(availableCells);
     }
+
+
+
+
+
     
     function checkPotentialWin(board, row, col, player, count, vertical = false) {
         const checkDirection = (r, c, rChange, cChange) => {
@@ -282,6 +299,75 @@ document.addEventListener("DOMContentLoaded", function () {
     function checkForTie() {
       return gameBoard.every((row) => row.every((cell) => cell !== ""));
     }
+	
+	// Check for player's potential corner moves
+function checkCornerMoves(tempBoard, player) {
+    // Define the corner cells
+    const cornerCells = [
+        {row: 0, col: 0},
+        {row: 0, col: cols - 1},
+        {row: rows - 1, col: 0},
+        {row: rows - 1, col: cols - 1}
+    ];
+
+    // Loop through the corner cells
+    for (const cell of cornerCells) {
+        // Check if the cell is empty
+        if (tempBoard[cell.row][cell.col] === "") {
+            // Check if the cell is part of a potential corner move for the player
+            // A potential corner move is when the player has occupied two or more cells in the same corner
+            // For example, if the player has X in [0, 1] and [1, 0], then [0, 0] is a potential corner move
+            let count = 0; // Count the number of occupied cells in the corner
+            let block = false; // Flag to indicate if the cell should be blocked
+
+            // Check the horizontal cells in the same row
+            for (let i = 0; i < cols; i++) {
+                if (tempBoard[cell.row][i] === player) {
+                    count++;
+                }
+            }
+
+            // Check the vertical cells in the same column
+            for (let j = 0; j < rows; j++) {
+                if (tempBoard[j][cell.col] === player) {
+                    count++;
+                }
+            }
+
+            // Check the diagonal cells if the cell is in the main diagonal
+            if (cell.row === cell.col) {
+                for (let k = 0; k < rows; k++) {
+                    if (tempBoard[k][k] === player) {
+                        count++;
+                    }
+                }
+            }
+
+            // Check the diagonal cells if the cell is in the anti-diagonal
+            if (cell.row + cell.col === rows - 1) {
+                for (let l = 0; l < rows; l++) {
+                    if (tempBoard[l][rows - 1 - l] === player) {
+                        count++;
+                    }
+                }
+            }
+
+            // If the count is greater than or equal to 2, then the cell should be blocked
+            if (count >= 2) {
+                block = true;
+            }
+
+            // Return the cell if it should be blocked
+            if (block) {
+                return cell;
+            }
+        }
+    }
+
+    // Return null if no corner move is found
+    return null;
+}
+
 
     function updateWinTally(player) {
         if (player === "X") {
